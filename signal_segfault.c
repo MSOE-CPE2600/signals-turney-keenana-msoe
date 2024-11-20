@@ -4,15 +4,23 @@
  */
 
 /**
- * Modified by:
+ * Modified by: Andrew Keenan
  * 
- * Brief summary of modifications:
+ * Brief summary of modifications: added a handler method to handle the SIGSEGV
+ * also registered that signal to call the handler
  */
 
-
+#include <signal.h>
 #include <stdio.h>
 
+void handler() {
+    printf("Segmentation fault recieved\n");
+}
+
 int main (int argc, char* argv[]) {
+    // register the handler
+    signal(SIGSEGV, handler);
+
     // Declare a null pointer
     int* i = NULL;
 
