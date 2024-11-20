@@ -4,9 +4,10 @@
  */
 
 /**
- * Modified by:
+ * Modified by: Andrew Keenan
  * 
- * Brief summary of modifications:
+ * Brief summary of modifications: i removed exit(1) from signal handler.
+ * I also added a new sigkill on the 3rd second
  */
 
 
@@ -20,7 +21,6 @@
  */
 void handle_signal() {
     printf("Received a signal\n");
-    exit(1);
 }
 
 int main() {
@@ -28,11 +28,25 @@ int main() {
     // Register for the signal
     signal(SIGINT, handle_signal);
 
+    // get pid
+    int pid = getpid();
+
+    // set a counter
+    int count = 0;
     // Wait until a signal is received
     while(1) {
         printf("Sleeping\n");
         sleep(1);
+        // use kill to send signal
+        if (kill(pid, SIGINT) == -1) {
+            printf("failed to send signal\n");
+        } else {
+            printf("signal sent through kill\n");
+        }
+        if (count == 3) {
+            kill(pid, SIGKILL);
+        }
+        count += 1;
     }
-
     return 0;
 }
